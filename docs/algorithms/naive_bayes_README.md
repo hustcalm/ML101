@@ -118,7 +118,7 @@ Our implementation includes:
 ### Gaussian Naive Bayes
 
 ```python
-from algorithms.naive_bayes.naive_bayes import GaussianNaiveBayes
+from ml101 import GaussianNaiveBayes
 import numpy as np
 
 # Generate sample data
@@ -142,7 +142,7 @@ print(f"Class probabilities: {probabilities}")
 ### Multinomial Naive Bayes
 
 ```python
-from algorithms.naive_bayes.naive_bayes import MultinomialNaiveBayes
+from ml101 import MultinomialNaiveBayes
 
 # Document-term matrix (word counts)
 X_train = np.array([
@@ -166,7 +166,7 @@ print(f"Predictions: {predictions}")
 ### Bernoulli Naive Bayes
 
 ```python
-from algorithms.naive_bayes.naive_bayes import BernoulliNaiveBayes
+from ml101 import BernoulliNaiveBayes
 
 # Binary features
 X_train = np.array([
@@ -284,7 +284,7 @@ print(classification_report(y_test, y_pred))
 
 ```python
 from sklearn.feature_extraction.text import CountVectorizer
-from algorithms.naive_bayes.naive_bayes import MultinomialNaiveBayes
+from ml101 import MultinomialNaiveBayes
 
 # Sample text data
 texts = [

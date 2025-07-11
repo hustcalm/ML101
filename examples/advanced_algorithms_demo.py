@@ -10,19 +10,35 @@ Author: ML101 Project
 
 import numpy as np
 import matplotlib.pyplot as plt
-import sys
-import os
 
-# Add algorithm paths
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'algorithms', 'svm'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'algorithms', 'pca'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'algorithms', 'random_forest'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+# Import our implementations
+from ml101 import DecisionTree, RandomForest, PCA, SVM
+from ml101.utils import StandardScaler, train_test_split
 
-from svm import SVM, generate_classification_data
-from pca import PCA, generate_sample_data as generate_pca_data
-from random_forest import RandomForest, generate_sample_data as generate_rf_data
-from preprocessing import StandardScaler
+# Generate synthetic data functions
+def generate_classification_data(n_samples=100, n_features=2, n_classes=2, random_state=None):
+    """Generate synthetic classification data."""
+    from sklearn.datasets import make_classification
+    
+    return make_classification(n_samples=n_samples, n_features=n_features, 
+                             n_classes=n_classes, n_redundant=0, 
+                             n_informative=n_features, random_state=random_state)
+
+def generate_pca_data(n_samples=100, n_features=4, random_state=None):
+    """Generate synthetic PCA data."""
+    if random_state is not None:
+        np.random.seed(random_state)
+    
+    X = np.random.randn(n_samples, n_features)
+    # Add some correlation
+    X[:, 1] = X[:, 0] + 0.5 * np.random.randn(n_samples)
+    X[:, 2] = X[:, 1] + 0.3 * np.random.randn(n_samples)
+    
+    return X
+
+def generate_rf_data(n_samples=100, n_features=2, random_state=None):
+    """Generate synthetic Random Forest data."""
+    return generate_classification_data(n_samples, n_features, 2, random_state)
 
 
 def demonstrate_svm():
@@ -97,8 +113,8 @@ def demonstrate_pca():
     
     # Generate high-dimensional data
     print("\n1. Generating high-dimensional sample data...")
-    X, y = generate_pca_data(n_samples=500, n_features=50, 
-                            n_informative=10, random_state=42)
+    X, y = generate_classification_data(n_samples=500, n_features=50, 
+                            random_state=42)
     
     print(f"Original data shape: {X.shape}")
     print(f"Number of classes: {len(np.unique(y))}")
@@ -167,7 +183,6 @@ def demonstrate_random_forest():
     
     # Generate classification data
     X_class, y_class = generate_rf_data(n_samples=1000, n_features=20, 
-                                       n_informative=8, task='classification',
                                        random_state=42)
     
     # Split data
@@ -185,8 +200,7 @@ def demonstrate_random_forest():
         max_features='sqrt',
         bootstrap=True,
         oob_score=False,  # Disable OOB score for now
-        random_state=42,
-        task='classification'
+        random_state=42
     )
     
     print("\nTraining Random Forest classifier...")
@@ -210,7 +224,6 @@ def demonstrate_random_forest():
     
     # Generate regression data
     X_reg, y_reg = generate_rf_data(n_samples=1000, n_features=15, 
-                                   n_informative=5, task='regression',
                                    random_state=42)
     
     # Split data
@@ -224,8 +237,7 @@ def demonstrate_random_forest():
         max_features='sqrt',
         bootstrap=True,
         oob_score=True,
-        random_state=42,
-        task='regression'
+        random_state=42
     )
     
     print("Training Random Forest regressor...")
@@ -271,8 +283,8 @@ def demonstrate_combined_workflow():
     
     # Generate high-dimensional data
     print("\n1. Generating high-dimensional data...")
-    X, y = generate_pca_data(n_samples=800, n_features=50, 
-                            n_informative=15, random_state=42)
+    X, y = generate_classification_data(n_samples=800, n_features=50, 
+                            random_state=42)
     
     # Split data
     split_idx = int(0.8 * len(X))
@@ -300,7 +312,7 @@ def demonstrate_combined_workflow():
     
     algorithms = {
         'SVM': SVM(kernel='rbf', C=1.0, random_state=42),
-        'Random Forest': RandomForest(n_estimators=50, random_state=42, task='classification')
+        'Random Forest': RandomForest(n_estimators=50, random_state=42)
     }
     
     results = {}

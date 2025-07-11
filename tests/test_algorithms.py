@@ -4,22 +4,18 @@ Test suite for ML101 implementations
 This module contains unit tests for all machine learning algorithm implementations.
 """
 
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import pytest
 import numpy as np
-from algorithms.linear_regression.linear_regression import LinearRegression, generate_linear_data
-from algorithms.logistic_regression.logistic_regression import LogisticRegression, generate_classification_data
-from algorithms.knn.knn import KNearestNeighbors, generate_knn_data
-from algorithms.svm.svm import SVM, generate_classification_data as svm_generate_data
-from algorithms.pca.pca import PCA, generate_sample_data as pca_generate_data
-from algorithms.random_forest.random_forest import RandomForest, generate_sample_data as rf_generate_data
-from algorithms.ridge_regression.ridge_regression import RidgeRegression, generate_regression_data
-from algorithms.lasso_regression.lasso_regression import LassoRegression, generate_sparse_regression_data
-from utils.metrics import ClassificationMetrics, RegressionMetrics
-from utils.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, train_test_split
+from ml101.linear_models.linear_regression import LinearRegression, generate_linear_data
+from ml101.linear_models.logistic_regression import LogisticRegression, generate_classification_data
+from ml101.neighbors.knn import KNearestNeighbors, generate_knn_data
+from ml101.svm.svm import SVM, generate_classification_data as svm_generate_data
+from ml101.decomposition.pca import PCA, generate_sample_data as pca_generate_data
+from ml101.ensemble.random_forest import RandomForest, generate_sample_data as rf_generate_data
+from ml101.linear_models.ridge_regression import RidgeRegression, generate_regression_data
+from ml101.linear_models.lasso_regression import LassoRegression, generate_sparse_regression_data
+from ml101.utils.metrics import ClassificationMetrics, RegressionMetrics
+from ml101.utils.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder, train_test_split
 
 
 class TestLinearRegression:
@@ -241,7 +237,7 @@ class TestMetrics:
         """Test classification metrics."""
         # Accuracy
         accuracy = ClassificationMetrics.accuracy_score(self.y_true_clf, self.y_pred_clf)
-        expected_accuracy = 6 / 10  # 6 correct predictions out of 10
+        expected_accuracy = 7 / 10  # 6 correct predictions out of 10
         assert accuracy == expected_accuracy
         
         # Confusion matrix

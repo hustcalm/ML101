@@ -4,22 +4,41 @@ Comprehensive Machine Learning Examples
 This script demonstrates multiple algorithms with comparisons and visualizations.
 """
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split as sklearn_train_test_split
+from sklearn.preprocessing import StandardScaler as SklearnStandardScaler
 from sklearn.datasets import make_classification, make_regression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression as SklearnLogistic
 
-# Import our implementations
-from algorithms.linear_regression.linear_regression import LinearRegression, generate_linear_data
-from algorithms.logistic_regression.logistic_regression import LogisticRegression, generate_classification_data
-from algorithms.knn.knn import KNearestNeighbors, generate_knn_data, KNNVisualization
+# Import our ML101 implementations
+from ml101 import LinearRegression, LogisticRegression, KNearestNeighbors
+from ml101.utils import train_test_split, StandardScaler
+
+# Generate synthetic data functions
+def generate_linear_data(n_samples=100, n_features=1, noise=0.1, random_state=None):
+    """Generate synthetic linear regression data."""
+    if random_state is not None:
+        np.random.seed(random_state)
+    
+    X = np.random.randn(n_samples, n_features)
+    true_coef = np.random.randn(n_features)
+    y = X @ true_coef + np.random.randn(n_samples) * noise
+    
+    return X, y
+
+def generate_classification_data(n_samples=100, n_features=2, n_classes=2, random_state=None):
+    """Generate synthetic classification data."""
+    return make_classification(n_samples=n_samples, n_features=n_features, 
+                             n_classes=n_classes, n_redundant=0, 
+                             n_informative=n_features, random_state=random_state)
+
+def generate_knn_data(n_samples=100, n_features=2, random_state=None):
+    """Generate synthetic KNN data."""
+    return make_classification(n_samples=n_samples, n_features=n_features, 
+                             n_classes=2, n_redundant=0, 
+                             n_informative=n_features, random_state=random_state)
 
 
 def linear_regression_demo():
@@ -195,7 +214,7 @@ def knn_demo():
     
     # Classification demo
     print("\n--- CLASSIFICATION ---")
-    X, y = generate_knn_data(task='classification', n_samples=300, random_state=42)
+    X, y = generate_knn_data(n_samples=300, random_state=42)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     
     # Test different k values
@@ -203,7 +222,7 @@ def knn_demo():
     
     print("K-value analysis:")
     for k in k_values:
-        model = KNearestNeighbors(k=k, task='classification')
+        model = KNearestNeighbors(k=k)
         model.fit(X_train, y_train)
         
         train_acc = model.score(X_train, y_train)

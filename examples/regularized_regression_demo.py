@@ -14,14 +14,9 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-# Add algorithm paths
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'algorithms', 'linear_regression'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'algorithms', 'ridge_regression'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'algorithms', 'lasso_regression'))
-
-from linear_regression import LinearRegression
-from ridge_regression import RidgeRegression
-from lasso_regression import LassoRegression
+# Import our implementations
+from ml101 import LinearRegression, RidgeRegression, LassoRegression
+from ml101.utils import train_test_split, StandardScaler
 
 
 def compare_regularization_methods():

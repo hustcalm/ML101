@@ -1,0 +1,19 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include requirements.txt
+include pyproject.toml
+recursive-include ml101 *.py
+recursive-include examples *.py *.ipynb
+recursive-include notebooks *.ipynb *.md
+recursive-include tests *.py
+recursive-include datasets *.csv *.json
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude *.egg-info
+global-exclude docs/

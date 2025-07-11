@@ -20,7 +20,7 @@ class DecisionTreeNode:
     def __init__(self, feature_index: Optional[int] = None, threshold: Optional[float] = None,
                  left: Optional['DecisionTreeNode'] = None, right: Optional['DecisionTreeNode'] = None,
                  value: Optional[Union[float, int]] = None, samples: int = 0, 
-                 class_counts: Optional[dict] = None):
+                 class_counts: Optional[dict] = None, impurity: float = 0.0):
         self.feature_index = feature_index  # Index of feature to split on
         self.threshold = threshold          # Threshold value for split
         self.left = left                   # Left child node
@@ -28,6 +28,7 @@ class DecisionTreeNode:
         self.value = value                 # Prediction value (for leaf nodes)
         self.samples = samples             # Number of samples in this node
         self.class_counts = class_counts   # Class counts for classification
+        self.impurity = impurity           # Impurity value for this node
 
 
 class DecisionTree:
@@ -240,7 +241,10 @@ class DecisionTree:
                 value = np.mean(y)
                 class_counts = None
             
-            return DecisionTreeNode(value=value, samples=n_samples, class_counts=class_counts)
+            # Calculate impurity for this node
+            impurity = self._calculate_impurity(y)
+            
+            return DecisionTreeNode(value=value, samples=n_samples, class_counts=class_counts, impurity=impurity)
         
         # Find best split
         best_feature, best_threshold, best_gain = self._get_best_split(X, y)
@@ -255,7 +259,10 @@ class DecisionTree:
                 value = np.mean(y)
                 class_counts = None
             
-            return DecisionTreeNode(value=value, samples=n_samples, class_counts=class_counts)
+            # Calculate impurity for this node
+            impurity = self._calculate_impurity(y)
+            
+            return DecisionTreeNode(value=value, samples=n_samples, class_counts=class_counts, impurity=impurity)
         
         # Split the data
         left_mask = X[:, best_feature] <= best_threshold
@@ -265,8 +272,11 @@ class DecisionTree:
         left_child = self._build_tree(X[left_mask], y[left_mask], depth + 1)
         right_child = self._build_tree(X[right_mask], y[right_mask], depth + 1)
         
+        # Calculate impurity for this node
+        impurity = self._calculate_impurity(y)
+        
         return DecisionTreeNode(feature_index=best_feature, threshold=best_threshold,
-                               left=left_child, right=right_child, samples=n_samples)
+                               left=left_child, right=right_child, samples=n_samples, impurity=impurity)
     
     def fit(self, X: np.ndarray, y: np.ndarray) -> 'DecisionTree':
         """
@@ -493,14 +503,26 @@ class DecisionTree:
             if node.feature_index is None:
                 return
             
-            # Calculate importance for this node
+            # Calculate importance for this node based on weighted impurity decrease
             left_samples = node.left.samples if node.left else 0
             right_samples = node.right.samples if node.right else 0
             
-            # This is a simplified importance calculation
-            # In practice, you'd calculate the actual impurity decrease
-            importance = node.samples / total_samples
-            importances[node.feature_index] += importance
+            if left_samples > 0 and right_samples > 0:
+                # Calculate weighted impurity decrease using stored impurity values
+                left_impurity = node.left.impurity
+                right_impurity = node.right.impurity
+                current_impurity = node.impurity
+                
+                # Weighted impurity decrease
+                weighted_impurity_decrease = (
+                    current_impurity - 
+                    (left_samples / node.samples) * left_impurity - 
+                    (right_samples / node.samples) * right_impurity
+                )
+                
+                # Weight by number of samples that go through this node
+                importance = (node.samples / total_samples) * weighted_impurity_decrease
+                importances[node.feature_index] += max(0, importance)
             
             # Recursively calculate for children
             if node.left:

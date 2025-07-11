@@ -17,18 +17,13 @@ Author: ML101 Project
 
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union, List, Tuple, Literal
 import sys
 import os
 
 # Add the decision tree module to the path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'decision_trees'))
-try:
-    from decision_tree import DecisionTree
-except ImportError:
-    # Fallback for when running from different locations
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'algorithms', 'decision_trees'))
-    from decision_tree import DecisionTree
+from ..tree.decision_tree import DecisionTree
 
 
 class RandomForest:
@@ -48,7 +43,7 @@ class RandomForest:
                  bootstrap: bool = True,
                  oob_score: bool = False,
                  random_state: Optional[int] = None,
-                 task: str = 'classification'):
+                 task: Literal['classification', 'regression'] = 'classification'):
         """
         Initialize Random Forest.
         
@@ -194,6 +189,18 @@ class RandomForest:
         # Initialize estimators
         self.estimators_ = []
         
+        # Initialize OOB tracking variables
+        oob_predictions = None
+        oob_counts = None
+        
+        # Initialize OOB tracking if needed
+        if self.oob_score:
+            if self.task == 'classification':
+                oob_predictions = np.zeros((n_samples, self.n_classes_))
+            else:
+                oob_predictions = np.zeros(n_samples)
+            oob_counts = np.zeros(n_samples)
+        
         # Get number of features per tree
         max_features = self._get_n_features(n_features)
         
@@ -209,12 +216,42 @@ class RandomForest:
                 min_samples_leaf=self.min_samples_leaf,
                 max_features=max_features,
                 random_state=self.random_states_[i],
-                task=self.task
+                task=self.task  # type: ignore
             )
             
             # Fit tree
             tree.fit(X_bootstrap, y_bootstrap)
             self.estimators_.append(tree)
+            
+            # Calculate OOB predictions if requested
+            if self.oob_score and len(oob_indices) > 0 and oob_predictions is not None:
+                if self.task == 'classification':
+                    oob_pred = tree.predict_proba(X[oob_indices])
+                    oob_predictions[oob_indices] += oob_pred
+                else:
+                    oob_pred = tree.predict(X[oob_indices])
+                    oob_predictions[oob_indices] += oob_pred
+                oob_counts[oob_indices] += 1
+        
+        # Calculate OOB score
+        if self.oob_score and oob_predictions is not None and oob_counts is not None:
+            valid_oob_mask = oob_counts > 0
+            if np.sum(valid_oob_mask) > 0:
+                if self.task == 'classification':
+                    # Average the probabilities and get class predictions
+                    oob_proba = oob_predictions[valid_oob_mask] / oob_counts[valid_oob_mask, np.newaxis]
+                    oob_pred_classes = np.argmax(oob_proba, axis=1)
+                    self.oob_score_ = np.mean(oob_pred_classes == y[valid_oob_mask])
+                else:
+                    # Average the predictions
+                    oob_pred = oob_predictions[valid_oob_mask] / oob_counts[valid_oob_mask]
+                    # Calculate R² score
+                    y_oob = y[valid_oob_mask]
+                    ss_res = np.sum((y_oob - oob_pred) ** 2)
+                    ss_tot = np.sum((y_oob - np.mean(y_oob)) ** 2)
+                    self.oob_score_ = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
+            else:
+                self.oob_score_ = None
         
         # Calculate feature importances
         self._calculate_feature_importances()
@@ -229,8 +266,16 @@ class RandomForest:
         importances = np.zeros(self.n_features_)
         
         for tree in self.estimators_:
-            if hasattr(tree, 'feature_importances_') and tree.feature_importances_ is not None:
-                importances += tree.feature_importances_
+            if hasattr(tree, 'feature_importances_'):
+                try:
+                    tree_importances = tree.feature_importances_
+                    if tree_importances is not None:
+                        # Ensure it's a float array
+                        tree_importances = np.asarray(tree_importances, dtype=np.float64)
+                        importances += tree_importances
+                except Exception:
+                    # Skip trees with problematic feature importances
+                    continue
         
         # Normalize
         importances /= len(self.estimators_)

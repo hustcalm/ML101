@@ -8,15 +8,24 @@ This script demonstrates the Linear Regression implementation with:
 4. Comparison with scikit-learn
 """
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression as SklearnLinearRegression
 from sklearn.metrics import r2_score
-from algorithms.linear_regression.linear_regression import LinearRegression, generate_linear_data
+from ml101 import LinearRegression
+from ml101.utils import train_test_split
+
+# Generate synthetic data
+def generate_linear_data(n_samples=100, n_features=1, noise=0.1, random_state=None):
+    """Generate synthetic linear regression data."""
+    if random_state is not None:
+        np.random.seed(random_state)
+    
+    X = np.random.randn(n_samples, n_features)
+    true_coef = np.random.randn(n_features)
+    y = X @ true_coef + np.random.randn(n_samples) * noise
+    
+    return X, y
 
 
 def compare_methods():
