@@ -20,7 +20,7 @@ __version__ = "0.1.0"
 __author__ = "ML101 Contributors"
 __email__ = "ml101.algorithms@gmail.com"
 __license__ = "MIT"
-__url__ = "https://github.com/yourusername/ML101"
+__url__ = "https://github.com/hustcalm/ML101"
 
 # Import main classes for easy access
 from .linear_models import LinearRegression, LogisticRegression, RidgeRegression, LassoRegression

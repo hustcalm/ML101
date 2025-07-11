@@ -50,10 +50,10 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/ML101"
+Homepage = "https://github.com/hustcalm/ML101"
 Documentation = "https://ml101-algorithms.readthedocs.io/"
-Repository = "https://github.com/yourusername/ML101"
-"Bug Tracker" = "https://github.com/yourusername/ML101/issues"
+Repository = "https://github.com/hustcalm/ML101"
+"Bug Tracker" = "https://github.com/hustcalm/ML101/issues"
 
 [tool.black]
 line-length = 88

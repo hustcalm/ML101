@@ -71,10 +71,10 @@ This documentation emphasizes:
 
 ## 🔗 External Resources
 
-- [Main Repository](https://github.com/yourusername/ML101)
+- [Main Repository](https://github.com/hustcalm/ML101)
 - [Examples](../examples/)
 - [Interactive Notebooks](../notebooks/)
-- [Issue Tracker](https://github.com/yourusername/ML101/issues)
+- [Issue Tracker](https://github.com/hustcalm/ML101/issues)
 
 ---
 

@@ -3,8 +3,8 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/ml101-algorithms.svg)](https://badge.fury.io/py/ml101-algorithms)
-[![CI/CD](https://github.com/yourusername/ML101/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/yourusername/ML101/actions)
-[![codecov](https://codecov.io/gh/yourusername/ML101/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/ML101)
+[![CI/CD](https://github.com/hustcalm/ML101/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/hustcalm/ML101/actions)
+[![codecov](https://codecov.io/gh/hustcalm/ML101/branch/main/graph/badge.svg)](https://codecov.io/gh/hustcalm/ML101)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A comprehensive, educational implementation of classical machine learning algorithms from scratch. Perfect for students, researchers, and practitioners who want to understand the inner workings of ML algorithms.
@@ -93,7 +93,7 @@ print(f"Model accuracy: {model.score(X_test, y_test):.3f}")
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/ML101.git
+   git clone https://github.com/hustcalm/ML101.git
    cd ML101
    ```
 
@@ -217,9 +217,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ML101/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ML101/discussions)
-- **Email**: your.email@example.com
+- **Issues**: [GitHub Issues](https://github.com/hustcalm/ML101/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/hustcalm/ML101/discussions)
+- **Email**: hustcalm@gmail.com
 
 ---
 
